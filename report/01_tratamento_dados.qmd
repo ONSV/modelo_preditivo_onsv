@@ -21,11 +21,11 @@ library(foreign)
 ```{r}
 
 if (file.exists("data/datasus.rda")) {
-  load("data/datasus.rda")
+  load(here("data/datasus.rda"))
 } else {
   df_datasus <- fetch_datasus(
     year_start = 1996,
-    year_end = 2021,
+    year_end = 2022,
     information_system = "SIM-DOEXT",
     vars = c("DTOBITO","CAUSABAS")
   )

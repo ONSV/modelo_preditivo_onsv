@@ -23,7 +23,7 @@ sinistros_prf <- open_dataset(temp_file) |>
     qnt_mortos = sum(mortos)
   ) |> 
   arrange(ano) |> 
-  filter(ano <= 2023) |> 
+  filter(ano <= 2024) |> 
   collect()
 
 unlink(temp_file)
