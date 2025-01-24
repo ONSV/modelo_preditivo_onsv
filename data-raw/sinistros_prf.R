@@ -5,7 +5,6 @@ url <- "https://github.com/ONSV/prfdata/releases/download/v0.2.1/prf_sinistros.p
 
 temp_file <- tempfile(fileext = ".parquet")
 
-
 download.file(url, temp_file, quiet = T, mode = "wb")
 
 
