@@ -303,7 +303,7 @@ mortes_previsao |>
   geom_point(shape = 21, size = 1.5, stroke = 1.5) +
   geom_line(linewidth = 1, alpha = 0.25) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  scale_x_continuous(breaks = seq(1996, 2023, 1)) +
+  scale_x_continuous(breaks = seq(1996, 2024, 1)) +
   scale_y_continuous(labels = comma_format(big.mark = ".")) +
   labs(x = NULL, y = NULL) +
   scale_discrete_onsv()
@@ -312,7 +312,7 @@ mortes_previsao |>
 O modelo foi utilizado para prever a ocorrência de mortes relacionadas à sinistros de trânsito em 2022, recebendo como *input* os respectivos dados das bases anteriormente consultadas. A predição aponta a tendência anual das mortes, com limites de erro considerados em um intervalo de confiança, conforme apresentado na @fig-pred. O valor previsto para 2022, com base no modelo efetuado, resultou em 33.725 mortes, com um intervalo de confiança entre 31.286 e 36.164 mortes.
 
 ```{r}
-#| fig.cap: Previsões com intervalo de confiança até 2023
+#| fig.cap: Previsões com intervalo de confiança até 2024
 #| echo: false
 #| label: fig-pred
 #| fig.width: 7
@@ -335,7 +335,7 @@ df_pred |>
     alpha = 0.25,
     color = "grey"
   ) +
-  scale_x_continuous(breaks = seq(1996, 2023, 1)) +
+  scale_x_continuous(breaks = seq(1996, 2024, 1)) +
   scale_y_continuous(labels = comma_format(big.mark = ".")) +
   labs(x = NULL, y = NULL) +
   scale_discrete_onsv()
@@ -389,7 +389,7 @@ taxas_pred |>
   ggplot(aes(x = ano, y = value, color = name)) +
   geom_point(shape = 21, size = 1.5, stroke = 1.5, aes(color = name)) +
   geom_line(linewidth = 1, alpha = 0.25, aes(color = name)) +
-  scale_x_continuous(limits = c(2011, 2023), breaks = seq(1996, 2023, 1)) +
+  scale_x_continuous(limits = c(2011, 2024), breaks = seq(1996, 2024, 1)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(x = NULL, y = NULL) +
   scale_color_manual(
@@ -400,7 +400,7 @@ taxas_pred |>
     values = c(onsv_palette$yellow, onsv_palette$blue)
   ) +
   geom_label(
-    data = taxas_pred |> filter(ano == 2023),
+    data = taxas_pred |> filter(ano == 2024),
     aes(
       x = ano,
       y = mortes_100mil_hab_pred,
@@ -428,7 +428,7 @@ taxas_pred |>
   ggplot(aes(x = ano, y = value, color = name)) +
   geom_point(shape = 21, size = 1.5, stroke = 1.5, aes(color = name)) +
   geom_line(linewidth = 1, alpha = 0.25, aes(color = name)) +
-  scale_x_continuous(limits = c(2011, 2023), breaks = seq(1996, 2023, 1)) +
+  scale_x_continuous(limits = c(2011, 2024), breaks = seq(1996, 2024, 1)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(x = NULL, y = NULL) +
   scale_color_manual(
@@ -439,7 +439,7 @@ taxas_pred |>
     values = c(onsv_palette$yellow, onsv_palette$blue)
   ) +
   geom_label(
-    data = taxas_pred |> filter(ano == 2023),
+    data = taxas_pred |> filter(ano == 2024),
     aes(
       x = ano,
       y = mortes_10mil_veic_pred,
@@ -513,7 +513,7 @@ prf_sinistros <- open_dataset(temp_file)
 ```{r}
 #| include: false
 
-dados_modelo_2023 <- list(
+dados_modelo_2024 <- list(
   drop_na(count(rename(rtdeaths, ano = ano_ocorrencia), ano, name = "mortes")),
   summarise(filter(fleetbr, modal == "TOTAL", mes == 7), 
             .by = ano, frota = sum(frota)),
@@ -527,42 +527,47 @@ dados_modelo_2023 <- list(
   tabela_condutores
 ) |> 
   reduce(full_join, by = "ano") |> 
-  arrange(ano)
+  arrange(ano)|>
+  mutate(
+    acids = ifelse(ano == 2024, 73114, acids),
+    acids_fatais = ifelse(ano == 2024, 5218, acids_fatais),
+    frota = ifelse(ano == 2024, 123974520, frota)
+  )
 ```
 
 ```{r}
 #| include=FALSE
 
-rec_anual_2023 <-
-  recipe(x = drop_na(dados_modelo_2023), mortes ~ .) |> 
+rec_anual_2024 <-
+  recipe(x = drop_na(dados_modelo_2024), mortes ~ .) |> 
   remove_role(ano, old_role = "predictor") |> 
   step_normalize(all_numeric_predictors())
 
-modelo_anual_2023 <-
+modelo_anual_2024 <-
   linear_reg() |> 
   set_engine("lm")
   
-wflow_anual_2023 <-
+wflow_anual_2024 <-
   workflow() |> 
-  add_model(modelo_anual_2023) |> 
-  add_recipe(rec_anual_2023) |> 
-  fit(drop_na(dados_modelo_2023))
+  add_model(modelo_anual_2024) |> 
+  add_recipe(rec_anual_2024) |> 
+  fit(drop_na(dados_modelo_2024))
 
-pred_anual_2023 <- bind_cols(
-  dados_modelo_2023,
-  predict(wflow_anual_2023, dados_modelo_2023),
-  predict(wflow_anual_2023, dados_modelo_2023, type = "conf_int")
+pred_anual_2024 <- bind_cols(
+  dados_modelo_2024,
+  predict(wflow_anual_2024, dados_modelo_2024),
+  predict(wflow_anual_2024, dados_modelo_2024, type = "conf_int")
 )
 ```
 
 ```{r}
 #| echo: false
-#| label: fig-pred2023
-#| fig.cap: Previsão de mortes anuais para 2023
+#| label: fig-pred2024
+#| fig.cap: Previsão de mortes anuais para 2024
 #| fig.width: 7
 #| fig.height: 5
 
-pred_anual_2023 |> 
+pred_anual_2024 |> 
   select(ano, mortes, .pred, .pred_lower, .pred_upper) |> 
   pivot_longer(
     cols = c(.pred, mortes),
@@ -581,15 +586,15 @@ pred_anual_2023 |>
     ) +
     geom_line(linewidth = 1, alpha = 0.25) +
     geom_point(shape = 21, size = 1.5, stroke = 1.5) +
-    scale_x_continuous(limits = c(2011,2023), breaks = seq(2011,2023,1)) +
+    scale_x_continuous(limits = c(2011,2024), breaks = seq(2011,2024,1)) +
     scale_y_continuous(labels = comma_format(big.mark = ".")) +
     scale_discrete_onsv() + 
     labs(x = NULL, y = NULL) +
     annotate("label",
-             x = 2022,
+             x = 2023,
              y = 40000,
-             label = paste0("Total de 2023:\n", 
-                            round(last(pred_anual_2023$.pred)),
+             label = paste0("Total de 2024:\n", 
+                            round(last(pred_anual_2024$.pred)),
                             " vítimas"))
 ```
 
@@ -724,7 +729,7 @@ df_mortes <- obitos_transito_mensal |>
 
 rm(obitos_transito_mensal)
 
-ts <- ts(df_mortes$mortes, start = c(1996,1), end = c(2021,12), frequency = 12)
+ts <- ts(df_mortes$mortes, start = c(1996,1), end = c(2022,12), frequency = 12)
 decomposed <- decompose(ts)
 ```
 
