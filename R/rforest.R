@@ -7,7 +7,7 @@ library(tidymodels)
 
 load(here("data/pib_mensal.rda"))
 
-url <- "https://github.com/ONSV/prfdata/releases/download/v0.2.1/prf_sinistros.parquet"
+url <- "https://github.com/plmex/prfdata/releases/download/v0.2.2/prf_sinistros.parquet"
 
 temp <- tempfile(fileext = ".parquet")
 

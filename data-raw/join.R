@@ -30,11 +30,7 @@ mortes_hab <- df_total |>
 df_total <- left_join(df_total, mortes_hab, by = "ano") |>
 mutate(
   automovel = ifelse(ano == 2024, 62586804, automovel),
-  qnt_acidentes = ifelse(ano == 2024, 73114, qnt_acidentes),
-  qnt_acidentes_fatais = ifelse(ano == 2024, 5218, qnt_acidentes_fatais),
   motocicleta = ifelse(ano == 2024, 27712300, motocicleta),
-  qnt_mortos = ifelse(ano == 2024, 6153, qnt_mortos),
-  qnt_feridos = ifelse(ano == 2024, 84398, qnt_feridos),
   veiculos_total = ifelse(ano == 2024, 121836610, veiculos_total)
 )
 

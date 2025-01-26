@@ -59,7 +59,7 @@ load(here("data","tabela_total_mensal.rda"))
 load(here("data/pib_mensal.rda"))
 load(here("data","tabela_condutores.rda"))
 
-url <- "https://github.com/ONSV/prfdata/releases/download/v0.2.1/prf_sinistros.parquet"
+url <- "https://github.com/plmex/prfdata/releases/download/v0.2.2/prf_sinistros.parquet"
 
 temp_file <- tempfile(fileext = ".parquet")
 
@@ -134,7 +134,7 @@ Vale ressaltar que nem todos os dados estão disponíveis em todas as escalas de
 
 #### Escalas de tempo
 
-Em razão da indisponibilidade de dados, os modelos confeccionados em geral contemplam uma janela de tempo de 2011 até a atualidade (2023), sendo as principais unidades de tempo estudadas a anual, trimestral e mensal. Ao criar modelos de série temporal, deve-se notar que a abundância de dados a serem modelados tem uma relação direta com a capacidade do modelo de aprender e conseguir expressá-los em instantes futuros.
+Em razão da indisponibilidade de dados, os modelos confeccionados em geral contemplam uma janela de tempo de 2011 até a atualidade (2024), sendo as principais unidades de tempo estudadas a anual, trimestral e mensal. Ao criar modelos de série temporal, deve-se notar que a abundância de dados a serem modelados tem uma relação direta com a capacidade do modelo de aprender e conseguir expressá-los em instantes futuros.
 
 Modelos treinados em âmbito mensal conseguem emitir previsões todo mês, porém perdem precisão quanto mais adiante realizam previsões, enquanto modelos anuais podem predizer com alto desempenho os valores de anos posteriores, mas não são capazes de prever meses ou trimestres. Assim, estas diversas abordagens são testadas a fim de comparar os desempenhos e utilidades de cada método.
 
@@ -659,7 +659,7 @@ plot_condutores <- tabela_condutores |>
   ggplot(aes(ano, condutores)) +
     geom_line(color = onsv_palette$blue) +
     geom_point(aes(text = paste("Condutores:",condutores)), color = onsv_palette$blue, size = 0.5) +
-    scale_x_continuous(breaks = seq(2011, 2023, 1)) +
+    scale_x_continuous(breaks = seq(2011, 2024, 1)) +
     scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
     labs(x = "Data", y = "Condutores")
 
@@ -795,7 +795,7 @@ ggcorrplot(
   cor_spearman_mensal,
   lab_col = "white",
   type = "lower",
-  lab = TRUE, 
+  lab = T, 
   hc.order = T,
   lab_size = 3, 
   tl.srt = 60,
@@ -881,11 +881,7 @@ dados_modelo_2024 <- list(
 ) |> 
   reduce(full_join, by = "ano") |> 
   arrange(ano)|>
-  mutate(
-    acids = ifelse(ano == 2024, 73114, acids),
-    acids_fatais = ifelse(ano == 2024, 5218, acids_fatais),
-    frota = ifelse(ano == 2024, 123974520, frota)
-  )
+  mutate(frota = ifelse(ano == 2024, 123974520, frota))
 
 rec_anual_2024 <-
   recipe(x = drop_na(dados_modelo_2024), mortes ~ .) |> 
@@ -1856,7 +1852,7 @@ Nota-se que ambos os métodos de análise de séries temporais prevêem uma qued
 
 ```{r}
 #| echo: false
-#| fig-cap: Gráficos de previsões para 2023 
+#| fig-cap: Gráficos de previsões para 2024 
 #| label: fig-facet-pred
 
 dodge <- position_dodge(1)
@@ -1993,7 +1989,7 @@ Em 2020, o IPEA divulgou o relatório "CUSTOS DOS ACIDENTES DE TRÂNSITO NO BRAS
 
 No trabalho realizado pelo IPEA, a estimativa dos custos dos sinistros é realizada de forma distinta para rodovias federais, rodovias estaduais ou municipais, e aglomerados urbanos. A estimativa para os sinistros ocorridos em rodovias federais é baseada em três componentes: (i) componentes de custos associados às pessoas; (ii) componentes de custos associados aos veículos; e (iii) componentes de custos institucionais e danos patrimoniais [@carvalhoCustosAcidentesTransito2020a].
 
-Para o fim de estimar o custo dos óbitos no trânsito brasileiro em 2023, será utilizado o custo associado às pessoas, na categoria "Mortos". Mesmo que essa seja uma estimativa para rodovias federais, ela será utilizada no calculo dos custos dos óbitos de uma forma geral para a quantidade de óbitos no Brasil em 2023, pois as outras categorias (rodovias estaduais / municipais e aglomerados urbanos) não possuem essa estimativa de componente associado às pessoas. Assim, será possível alcançar uma estimativa aproximada deste custo total.
+Para o fim de estimar o custo dos óbitos no trânsito brasileiro em 2024, será utilizado o custo associado às pessoas, na categoria "Mortos". Mesmo que essa seja uma estimativa para rodovias federais, ela será utilizada no calculo dos custos dos óbitos de uma forma geral para a quantidade de óbitos no Brasil em 2024, pois as outras categorias (rodovias estaduais / municipais e aglomerados urbanos) não possuem essa estimativa de componente associado às pessoas. Assim, será possível alcançar uma estimativa aproximada deste custo total.
 
 ```{r}
 #| include: false
@@ -2040,15 +2036,15 @@ Por fim, multiplicando o custo individual das mortes em 2023 pela quantidade est
 ```{r}
 #| include: false
 
-leitos_path <- here("data", "leitos_2023.csv")
-leitos <- read_csv2(leitos_path)
+leitos_path <- here("data", "leitos_2024.csv")
+leitos <- read.csv(leitos_path, sep = ",")
 media_leitos <- leitos$Quantidade_existente |>
   mean() |>
   round(digits = 0)
 
-qnt_internacoes <- 229529
-qnt_dias_internados <- 1256095
-taxa_leitos_ano <- media_leitos * 365
+# qnt_internacoes <- 229529
+# qnt_dias_internados <- 1256095
+# taxa_leitos_ano <- media_leitos * 365
 ```
 
 ## Conclusão {#sec-conclusao}
