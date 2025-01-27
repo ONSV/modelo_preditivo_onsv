@@ -19,8 +19,8 @@ sinistros_prf <- open_dataset(temp_file) |>
     .by = ano,
     qnt_acidentes = n(),
     qnt_acidentes_fatais = sum(acidentes_fatais),
-    qnt_feridos = sum(feridos),
-    qnt_mortos = sum(mortos)
+    qnt_feridos = sum(feridos, na.rm = T),
+    qnt_mortos = sum(mortos, na.rm = T)
   ) |> 
   arrange(ano) |> 
   filter(ano <= 2024) |> 

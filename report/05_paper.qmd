@@ -507,7 +507,7 @@ temp_file <- tempfile(fileext = ".parquet")
 
 download.file(url, temp_file, quiet = T, mode = "wb")
 
-prf_sinistros <- open_dataset(temp_file)
+prf_sinistros <- read_parquet(temp_file)
 ```
 
 ```{r}
