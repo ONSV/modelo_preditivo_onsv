@@ -162,8 +162,7 @@ Neste estudo, esta técnica de regressão é utilizada em razão de sua facilida
 
 Os conjuntos de dados extraídos e pré-processados em função das unidades de tempo denunciam os comportamentos de cada atributo em relação a passagem dos anos, trimestres e meses. Em destaque, os óbitos servem como um dos principais indicadores da qualidade e disseminação dos sistemas de segurança viária do país, mostrando a evolução das mortes ao longo do tempo:
 
-:::::::::: panel-tabset
-## Anual
+### Dados reais de óbitos {.unnumbered}
 
 ```{r}
 #| echo: false
@@ -190,15 +189,13 @@ rtdeaths |>
   )
 ```
 
-Os gráficos de óbitos no trânsito levantam uma tendência crescente nas vítimas fatais nos últimos quatro anos. O ano de 2019 atingiu a menor quantidade de óbitos relacionadas ao trânsito nos últimos 10 anos, quando em 2020 a têndencia tornou a crescer. No ano de 2023 houveram 34.811 vítimas fatais, 2.936 a mais que em 2019. Em 2023, essa tendência se elevou, com cresicmento de 2,91% de óbitos em relação ao ano anterior.
+O gráfico de óbitos no trânsito levantam uma tendência crescente nas vítimas fatais nos últimos quatro anos. O ano de 2019 atingiu a menor quantidade de óbitos relacionadas ao trânsito nos últimos 10 anos, quando em 2020 a têndencia tornou a crescer. No ano de 2023 houveram 34.811 vítimas fatais, 2.936 a mais que em 2019. Em 2023, essa tendência se elevou, com cresicmento de 2,91% de óbitos em relação ao ano anterior.
 
 Assim sendo, os demais atributos do conjunto de dados podem ser visualizados em função do tempo, como foi feito para o caso da variável preditada, com o intuito de destacar cada variável preditiva ao longo dos períodos disponíveis:
 
 ::: panel-tabset
-## Frota veicular (RENAVAM
+## Frota veicular (RENAVAM)
 
-:::::::: panel-tabset
-## Anual
 
 ```{r}
 #| echo: false
@@ -228,10 +225,12 @@ plot_frota_anual <- fleetbr |>
   ggplot(aes(ano, value, color = name)) +
     geom_line() +
     geom_point(aes(text = paste("Frota:", value)), size = 0.5) +
+    theme_light() +
     scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) + 
     scale_x_continuous(n.breaks = 10) +
-    labs(x = "Data", y = "Frota") +
-    scale_color_manual(values = paleta)
+    labs(x = "Ano", y = "Frota") +
+    scale_color_manual(values = paleta) +
+  theme(panel.border = element_blank())
 
 ggplotly(plot_frota_anual, tooltip = "text") |> 
   plotly::layout(legend = list(title = list(text = "")),
@@ -239,9 +238,6 @@ ggplotly(plot_frota_anual, tooltip = "text") |>
 ```
 
 ## PIB (IBGE, BCB)
-
-::::::: panel-tabset
-## Anual
 
 ```{r}
 #| echo: false
@@ -257,9 +253,11 @@ plot_pib_anual <- pib_mensal |>
   ggplot(aes(ano, pib)) +
     geom_line(color = onsv_palette$blue) +
     geom_point(aes(text = paste("PIB:",pib,"Mi US$")), color = onsv_palette$blue, size = 0.5) +
+    theme_light() +
     scale_x_continuous(n.breaks = 10) +
     scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
-    labs(x = "Data", y = "PIB (Mi US$)")
+    labs(x = "Ano", y = "PIB (Mi US$)") +
+  theme(panel.border = element_blank())
 
 ggplotly(plot_pib_anual, tooltip = "text") |> 
   plotly::layout(yaxis = list(title = list(standoff = 5)))
@@ -281,10 +279,12 @@ plot_populacao <- df_total |>
   ggplot(aes(ano, populacao)) +
     geom_line(color = onsv_palette$blue) +
     geom_point(aes(text = paste("População:", populacao)), color = onsv_palette$blue, size = 0.5) +
+    theme_light() +
     scale_x_continuous(breaks = seq(2011, 2024, 1)) +
     scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","),
                        limits = c(0, NA)) +
-    labs(x = "Data", y = "População")
+    labs(x = "Ano", y = "População") +
+  theme(panel.border = element_blank())
 
 ggplotly(plot_populacao, tooltip = "text") |> 
   plotly::layout(yaxis = list(title = list(standoff = 5)),
@@ -297,8 +297,6 @@ ggplotly(plot_populacao, tooltip = "text") |>
 
 ## Sinistros em rodovias federais (PRF)
 
-::: panel-tabset
-## Anual
 
 ```{r}
 #| echo: false
@@ -336,10 +334,12 @@ plot_prf_anual <- df_prf_plot |>
   ggplot(aes(ano, value, color = name)) +
     geom_line() +
     geom_point(aes(text = paste0(name,": ", value)), size = 0.5) +
+    theme_light() +
     scale_x_continuous(breaks = seq(2011, 2024, 1)) +
     scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
     scale_color_manual(values = paleta) +
-    labs(x = "Data", y = NULL)
+    labs(x = "Ano", y = NULL) +
+  theme(panel.border = element_blank())
 
 ggplotly(plot_prf_anual, tooltip = "text") |> 
   plotly::layout(legend = list(title = list(text = "")))
@@ -356,14 +356,17 @@ plot_condutores <- tabela_condutores |>
   ggplot(aes(ano, condutores)) +
     geom_line(color = onsv_palette$blue) +
     geom_point(aes(text = paste("Condutores:",condutores)), color = onsv_palette$blue, size = 0.5) +
+    theme_light() +
     scale_x_continuous(breaks = seq(2011, 2024, 1)) +
     scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
-    labs(x = "Data", y = "Condutores")
+    labs(x = "Ano", y = "Condutores") +
+  theme(panel.border = element_blank())
 
 ggplotly(plot_condutores, tooltip = "text") |> 
   plotly::layout(yaxis = list(title = list(standoff = 5)))
 ```
 :::
+
 
 Observa-se uma diferença entre os comportamentos de cada atributo ao longo do tempo. Variáveis convencionalmente cumulativas como a frota, a população e o número de condutores habilitados dispõem de um crescimento aproximadamente linear por todo o período de estudo. Todavia, detecta-se que a contagem da população se comportou de forma inesperada em alguns anos. Isso pode representar a diferença entre a população censitária e a população estimada pelo IBGE.
 
@@ -377,8 +380,7 @@ O sucesso da modelagem é inteiramente dependente da intensidade e do tipo de re
 
 Grandezas que variam juntas em uma correlação linear são ditas colineares, e o fenômeno da colinearidade entre variáveis preditivas pode vir a ocasionar sobreajuste ao modelo. Por isso, é necessário avaliar as correlações não lineares, como apontam os correlogramas, a partir do método de correlação Spearman:
 
-::::: panel-tabset
-## Anual
+
 
 ```{r}
 #| echo: false
@@ -417,7 +419,8 @@ ggcorrplot(
 )
 ```
 
-o correlagrama apresenta valores significativos para praticamente todas as variáveis, sendo que as matrizes de 𝑝-valores calculadas rejeitam a hipótese nula com facilidade para todos os atributos.
+
+o correlograma apresenta valores significativos para praticamente todas as variáveis, sendo que as matrizes de 𝑝-valores calculadas rejeitam a hipótese nula com facilidade para todos os atributos.
 
 ### Taxas de óbitos
 
@@ -448,17 +451,21 @@ plot_taxas <- df_total |>
   geom_line() +
   geom_point(aes(text = paste0(name, ": ", round(value, 2)))) +
   scale_x_continuous(limits = c(2011, 2023),
-                     breaks = seq(2011, 2023, 1)) +
+                     breaks = seq(2011, 2023, 1),
+                     expand = c(0,1)) +
   facet_wrap(vars(name), scales = "free_y") +
-  labs(y = "Índices", x = "Data") +
+  theme_light() +
+  labs(y = "Índices", x = "Ano") +
   scale_color_manual(values = paleta) +
-  theme(axis.text.x = element_text(vjust = 0.5, angle = 90))
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 90),
+        panel.grid.minor.y = element_blank(),
+        panel.spacing = unit(1.5, "lines"))
 
 ggplotly(plot_taxas, tooltip = "text") |>
   plotly::layout(legend = list(title = list(text = "")))
 ```
 
-As duas taxas anunciam tendências distintas a cerca da fatalidade no trânsito brasileiro. Enquanto o índice de mortes por veículos oferece uma perspectiva de estabilização no número de vítimas, a taxa de habitantes corrobora a visão de que as mortes estão inclinadas ao aumento na década atual. Deve-se levar em consideração que esta diferença de comportamento pode resultar da evolução da frota veicular e da população nacional em intensidades distintas.
+As duas taxas anunciam tendências distintas acerca da fatalidade no trânsito brasileiro. Enquanto o índice de mortes por veículos oferece uma perspectiva de estabilização no número de vítimas, a taxa de habitantes corrobora a visão de que as mortes estão inclinadas ao aumento na década atual. Deve-se levar em consideração que esta diferença de comportamento pode resultar da evolução da frota veicular e da população nacional em intensidades distintas.
 
 ### Resultado do modelo
 
@@ -468,7 +475,6 @@ A avaliação de desempenho do modelo foi feita a partir da necessidade e especi
 
 A análise de regressão linear múltipla foi a abordagem utilizada durante a produção do estudo. Cada métrica é extraída e apresentada para avaliação da performance, com os resultados.
 
-##### Anual
 
 ```{r}
 #| include: false
@@ -546,10 +552,12 @@ plot_pred_anual <- pred_anual_2024 |>
     ) +
     geom_line() +
     geom_point(aes(text = paste0(Tipo,": ", round(Mortes, 0))), size = 0.5) +
+    theme_light() +
     scale_x_continuous(breaks = seq(2011,2024,1)) +
     scale_y_continuous(labels = comma_format(big.mark = ".")) +
     scale_color_manual(values = paleta) + 
-    labs(x = NULL, y = NULL)
+    labs(x = NULL, y = NULL) +
+    theme(panel.border = element_blank())
 
 ggplotly(plot_pred_anual, tooltip = "text")
 ```
@@ -573,9 +581,11 @@ plot_qq_anual <- pred_anual_2024 |>
     color = onsv_palette$blue, 
     lty = "dashed"
   ) +
+  theme_light() +
   scale_y_continuous(labels = comma_format(big.mark = ".")) + 
   scale_x_continuous(labels = comma_format(big.mark = ".")) +
-  coord_obs_pred()
+  coord_obs_pred() +
+  theme(panel.border = element_blank())
 
 ggplotly(plot_qq_anual, tooltip = "text")
 ```
@@ -650,7 +660,7 @@ Uma das características notáveis deste modelo é sua capacidade de descrever o
 
 ### Comparação de Modelos
 
-Após os experimentos, a seleção de um modelo final é feita de forma comparativa, considerando não apenas os índices de métricas de erros calculados mas também as características e capacidades de cada modelo individualmente. A @tbl-compare demonstra os valores de desempenho dos modelos:
+Após os experimentos, a seleção de um modelo final é feita de forma comparativa, considerando não apenas os índices de métricas de erros calculados mas também as características e capacidades de cada modelo individualmente.
 
 O RMSE e o MAE melhoram em escalas menores de tempo, sendo consequência indireta da maior disponibilidade de dados para o treinamento do modelo. Mesmo assim, será perceptível que, por exemplo, um modelo mensal bem ajustado não prevê um ano inteiro melhor que um modelo anual, por efeito da acumulação de erros associados às previsões de cada mês. Como implica a @tbl-compare, o modelo linear anual aparenta ter resultados mais plausíveis que o mensal, mesmo tendo um desempenho de RMSE e MAE inferior. Em relação ao 𝑅^2^, o modelo anual apresenta o melhor desempenho.
 
@@ -665,6 +675,8 @@ pred_list <- list(
     lower.anual = .pred_lower
   ))
 ```
+
+
 
 ```{r}
 #| echo: false
@@ -716,12 +728,14 @@ pred_list |>
 
 Nota-se que o modelo regressivo estipulam que as fatalidades crescem. Na @fig-facet-pred, os resultados do modelo foram agrupados e somados por ano para visualização de cada série temporal:
 
+::: panel-tabset
+
+## Série 
 ```{r}
 #| echo: false
 #| fig-cap: Gráficos de previsões para 2024 
 #| label: fig-facet-pred
 
-dodge <- position_dodge(1)
 
 plot_comparison <- pred_list |> 
   reduce(left_join, by = "ano") |> 
@@ -739,13 +753,16 @@ plot_comparison <- pred_list |>
     scale_color_manual(values = c(onsv_palette$blue, onsv_palette$yellow)) +
     scale_x_continuous(breaks = seq(2011, 2024, 1), limits = c(2011, NA)) +
     scale_y_continuous(labels = label_comma(decimal.mark = ",", big.mark = ".")) +
-    theme(axis.text.x = element_text(angle = 90)) +
+    theme_light() +
+    theme(axis.text.x = element_text(angle = 90),
+          panel.border = element_blank()) +
     facet_wrap(tipo ~ .) +
     labs(x = NULL, y = NULL)
     
 ggplotly(plot_comparison, tooltip = "text") |> 
   plotly::layout(legend = list(title = list(text = "")))
 ```
+
 
 ```{r}
 #| include: false
@@ -755,7 +772,7 @@ load(here("data/populacao.rda"))
 
 Em questão das taxas anteriormente discutidas para quantificação dos óbitos em relação à população e à frota veicular, novos valores podem ser calculados sobre as previsões a fim de averiguar a mudança destas taxas em função do tempo:
 
-::: panel-tabset
+
 ## Óbitos por 100 mil hab.
 
 ```{r}
@@ -783,8 +800,10 @@ plot_taxa_popul <- pred_list |>
                    text = paste("Taxa real:", taxa_real))) +
     scale_color_manual(values = c(onsv_palette$blue, onsv_palette$yellow)) +
     scale_x_continuous(breaks = seq(2011, 2024, 1), limits = c(2011, NA)) +
+    theme_light() +
     theme(axis.text.x = element_text(angle = 90),
-          panel.spacing.y = unit(1, "lines")) +
+          panel.spacing.y = unit(1, "lines"),
+          panel.border = element_blank()) +
     facet_wrap(tipo ~ .) +
     labs(x = NULL, y = NULL)
   
@@ -814,10 +833,12 @@ plot_taxa_frota <- pred_list |>
     geom_line(aes(color = "Óbitos reais")) +
     geom_point(aes(color = "Óbitos reais", 
                    text = paste("Taxa real:", taxa_real))) +
+    theme_light() +
     scale_color_manual(values = c(onsv_palette$blue, onsv_palette$yellow)) +
     scale_x_continuous(breaks = seq(2011, 2024, 1), limits = c(2011, NA)) +
     theme(axis.text.x = element_text(angle = 90),
-          panel.spacing.y = unit(1, "lines")) +
+          panel.spacing.y = unit(1, "lines"),
+          panel.border = element_blank()) +
     facet_wrap(tipo ~ .) +
     labs(x = NULL, y = NULL)
 
@@ -909,8 +930,3 @@ Com a estimativa dos custos dos óbitos realizada, foi possível chegar a um val
 É fundamental também destacar que as soluções de segurança viária não dependem apenas de atributos da mobilidade urbana. Inúmeros fatores socioeconômicos e de infraestrutura podem afetar o desempenho da segurança. O cenário atual da segurança viária brasileira apresenta alguns desafios e deficiências que podem impactar na conquista das metas de redução estabelecidas em âmbito nacional pelo PNATRANS. Os dados previstos mostram um desempenho abaixo do ideal no combate da fatalidade no trânsito brasileiro, conferindo uma perspectiva pessimista para a década atual no Brasil e, caso este cenário não seja amenizado com antecedência, é improvável a ocorrência de avanços significativos nos objetivos da Segunda Década de Ação pela Segurança no Trânsito.
 
 ## Referências {.unnumbered}
-:::::
-:::::::
-::::::::
-:::::::::
-::::::::::
