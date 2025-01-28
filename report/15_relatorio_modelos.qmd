@@ -184,7 +184,7 @@ rtdeaths |>
   ) |> 
   plotly::layout(
     yaxis = list(exponentformat = "none", title = "Óbitos"),
-    xaxis = list(title = "Data"),
+    xaxis = list(title = "Ano"),
     separators = ",."
   )
 ```
